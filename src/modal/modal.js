@@ -291,17 +291,28 @@ angular.module('ui.bootstrap.modal', [])
           body.append(backdropDomEl);
         }
 
-        var angularDomEl = angular.element('<div modal-window="modal-window"></div>');
-        angularDomEl.attr({
-          'template-url': modal.windowTemplateUrl,
-          'window-class': modal.windowClass,
-          'size': modal.size,
-          'index': openedWindows.length() - 1,
-          'animate': 'animate'
-        }).html(modal.content);
-        if (modal.animation) {
-          angularDomEl.attr('modal-animation', 'true');
-        }
+          // DEBUG
+          // insert kendo window instead of bootstrap
+    var  angularDomEl = $('<div></div>');
+          angularDomEl = $('#mWindow');
+          angularDomEl.kendoWindow({});
+//        angularDomEl.kendoWindow({
+//              width: "600px",
+//              title: modal.title,
+//              actions: modal.actions,
+//              content: modal.content
+//          });
+//        var angularDomEl = angular.element('<div modal-window="modal-window"></div>');
+//        angularDomEl.attr({
+//          'template-url': modal.windowTemplateUrl,
+//          'window-class': modal.windowClass,
+//          'size': modal.size,
+//          'index': openedWindows.length() - 1,
+//          'animate': 'animate'
+//        }).html(modal.content);
+//        if (modal.animation) {
+//          angularDomEl.attr('modal-animation', 'true');
+//        }
 
         var modalDomEl = $compile(angularDomEl)(modal.scope);
         openedWindows.top().value.modalDomEl = modalDomEl;
@@ -371,12 +382,21 @@ angular.module('ui.bootstrap.modal', [])
           var $modal = {};
 
           function getTemplatePromise(options) {
+              console.log('entered getTemplatePromise.');
             return options.template ? $q.when(options.template) :
               $http.get(angular.isFunction(options.templateUrl) ? (options.templateUrl)() : options.templateUrl,
                 {cache: $templateCache}).then(function (result) {
+                      console.log('http.get.then');
                   return result.data;
               });
           }
+//          function getTemplatePromise(options) {
+//            return options.template ? $q.when(options.template) :
+//              $http.get(angular.isFunction(options.templateUrl) ? (options.templateUrl)() : options.templateUrl,
+//                {cache: $templateCache}).then(function (result) {
+//                  return result.data;
+//              });
+//          }
 
           function getResolvePromises(resolves) {
             var promisesArr = [];
@@ -387,7 +407,17 @@ angular.module('ui.bootstrap.modal', [])
             });
             return promisesArr;
           }
+            //DEBUG
+           $modal.open1 = function(modalOptions){
 
+               var d = $q.all([getTemplatePromise(modalOptions)]).then(function(opt){
+                   console.log(arguments);
+                   console.log('entered q.all.then');
+                   debugger;
+               });
+               console.log('after q.all');
+               debugger;
+           }
           $modal.open = function (modalOptions) {
 
             var modalResultDeferred = $q.defer();
@@ -416,10 +446,11 @@ angular.module('ui.bootstrap.modal', [])
               throw new Error('One of template or templateUrl options is required.');
             }
 
+            //get template and data for it
             var templateAndResolvePromise =
               $q.all([getTemplatePromise(modalOptions)].concat(getResolvePromises(modalOptions.resolve)));
 
-
+            //got template and data
             templateAndResolvePromise.then(function resolveSuccess(tplAndVars) {
 
               var modalScope = (modalOptions.scope || $rootScope).$new();

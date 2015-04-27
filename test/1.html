@@ -1,12 +1,25 @@
 <!doctype html>
 <html ng-app="ui.bootstrap.demo">
 <head>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.js"></script>
+    <script src="../vendor/angular.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.2.js"></script>
+    <script src="../vendor/kendo.core.min.js"></script>
+    <script src="../vendor/kendo.userevents.min.js"></script>
+    <script src="../vendor/kendo.draganddrop.min.js"></script>
+    <script src="../vendor/kendo.window.min.js"></script>
     <script src="../src/modal/modal.js"></script>
     <script src="1.js"></script>
+
+    <link rel="stylesheet" href="../style/kendo.common.min.css" />
+    <link rel="stylesheet" href="../style/kendo.default.min.css" />
+    <link rel="stylesheet" href="../style/kendo.dataviz.min.css" />
+    <link rel="stylesheet" href="../style/kendo.dataviz.default.min.css" />
+
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+<div id="mWindow"></div>
 
 <div ng-controller="ModalDemoCtrl">
     <script type="text/ng-template" id="myModalContent.html">
