@@ -131,34 +131,15 @@ angular.module('ui.bootstrap.modal', [])
 
             var openedWindows = $$stackedMap.createNew();
             var $modalStack = {};
-//
-//            function backdropIndex() {
-//                var topBackdropIndex = -1;
-//                var opened = openedWindows.keys();
-//                for (var i = 0; i < opened.length; i++) {
-//                    if (openedWindows.get(opened[i]).value.backdrop) {
-//                        topBackdropIndex = i;
-//                    }
-//                }
-//                return topBackdropIndex;
-//            }
-//
-//            $rootScope.$watch(backdropIndex, function (newBackdropIndex) {
-//                if (backdropScope) {
-//                    backdropScope.index = newBackdropIndex;
-//                }
-//            });
 
             function removeModalWindow(modalInstance) {
-
                 var body = $document.find('body').eq(0);
                 var modalWindow = openedWindows.get(modalInstance).value;
-
+                debugger;
                 //clean up the stack
                 openedWindows.remove(modalInstance);
-
-                //remove window DOM element
-                // TODO:close window
+                // close the window
+                modalWindow.windowObj.close();
                 // remove OPEN_MODAL_CLASS
                 body.toggleClass(OPENED_MODAL_CLASS, openedWindows.length() > 0);
             }
@@ -178,34 +159,38 @@ angular.module('ui.bootstrap.modal', [])
             });
 
             $modalStack.open = function (modalInstance, modal) {
-
                 var modalOpener = $document[0].activeElement;
 
-                openedWindows.add(modalInstance, {
-                    deferred: modal.deferred,
-                    renderDeferred: modal.renderDeferred,
-                    modalScope: modal.scope,
-                    backdrop: modal.backdrop,
-                    keyboard: modal.keyboard
-                });
                 var body = $document.find('body').eq(0);
                 // insert kendo window instead of bootstrap
                 var angularDomEl = $('<div modal-window="modal-window"></div>').html(modal.content);
 
                 var contentDomEl = $compile(angularDomEl)(modal.scope);
                 angularDomEl.append(contentDomEl);
-                openedWindows.top().value.modalDomEl = angularDomEl;
-                openedWindows.top().value.modalOpener = modalOpener;
+
                 body.append(angularDomEl);
                 body.addClass(OPENED_MODAL_CLASS);
 
                 angularDomEl.kendoWindow(modal.settings);
                 var windowObj = angularDomEl.data('kendoWindow');
+                // bind [x]-button close to closing function
                 var closeFn = function(){
                     return $modalStack.close(modalInstance, modalInstance.result);
                 }
                 windowObj.bind("close", closeFn);
+
                 windowObj.center().open();
+
+                openedWindows.add(modalInstance, {
+                    deferred: modal.deferred,
+                    renderDeferred: modal.renderDeferred,
+                    modalScope: modal.scope,
+                    keyboard: modal.keyboard,
+                    element:angularDomEl,
+                    windowObj: windowObj
+                });
+                openedWindows.top().value.modalDomEl = angularDomEl;
+                openedWindows.top().value.modalOpener = modalOpener;
 
             };
 
