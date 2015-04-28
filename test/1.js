@@ -8,22 +8,14 @@ angular.module('ui.bootstrap.demo').controller('ModalDemoCtrl', function ($scope
 
     $scope.open = function (size) {
 
-
-
         var modalInstance = $modal.open({
             templateUrl: 'myModalContent.html',
             controller: 'ModalInstanceCtrl',
-            size: size,
-            resolve: {
-                items: function () {
-                    return $scope.items;
-                }
-            }
-        });
-        var modalInstance1 = $modal.open({
-            templateUrl: 'myModalContent.html',
-            controller: 'ModalInstanceCtrl',
-            size: size,
+            settings:{
+                width: 600,
+                actions: ['close'],
+                title: 'Super-druper'
+            },
             resolve: {
                 items: function () {
                     return $scope.items;
@@ -32,11 +24,6 @@ angular.module('ui.bootstrap.demo').controller('ModalDemoCtrl', function ($scope
         });
 
         modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-        modalInstance1.result.then(function (selectedItem) {
             $scope.selected = selectedItem;
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
