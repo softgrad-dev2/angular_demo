@@ -1,4 +1,4 @@
-angular.module('ui.bootstrap.modal', [])
+angular.module('speedup.modal', [])
 
 /**
  * A helper, internal data structure that acts as a map but also allows getting / removing
@@ -67,7 +67,6 @@ angular.module('ui.bootstrap.modal', [])
             },
             link: function (scope, element, attrs) {
                 element.addClass(attrs.windowClass || '');
-//                scope.size = attrs.size;
 
                 // This property is only added to the scope for the purpose of detecting when this directive is rendered.
                 // We can detect that by using this property in the template associated with this directive and then use
@@ -85,8 +84,6 @@ angular.module('ui.bootstrap.modal', [])
                 });
 
                 modalRenderDeferObj.promise.then(function () {
-                    // trigger CSS transitions
-                    scope.animate = true;
 
                     var inputsWithAutofocus = element[0].querySelectorAll('[autofocus]');
                     /**
@@ -124,8 +121,8 @@ angular.module('ui.bootstrap.modal', [])
         };
     })
 
-    .factory('$modalStack', ['$animate', '$timeout', '$document', '$compile', '$rootScope', '$$stackedMap',
-        function ($animate, $timeout, $document, $compile, $rootScope, $$stackedMap) {
+    .factory('$modalStack', ['$document', '$compile', '$rootScope', '$$stackedMap',
+        function ($document, $compile, $rootScope, $$stackedMap) {
 
             var OPENED_MODAL_CLASS = 'modal-open';
 
@@ -135,7 +132,6 @@ angular.module('ui.bootstrap.modal', [])
             function removeModalWindow(modalInstance) {
                 var body = $document.find('body').eq(0);
                 var modalWindow = openedWindows.get(modalInstance).value;
-                debugger;
                 //clean up the stack
                 openedWindows.remove(modalInstance);
                 // close the window
@@ -162,7 +158,7 @@ angular.module('ui.bootstrap.modal', [])
                 var modalOpener = $document[0].activeElement;
 
                 var body = $document.find('body').eq(0);
-                // insert kendo window instead of bootstrap
+
                 var angularDomEl = $('<div modal-window="modal-window"></div>').html(modal.content);
 
                 var contentDomEl = $compile(angularDomEl)(modal.scope);
@@ -175,7 +171,7 @@ angular.module('ui.bootstrap.modal', [])
                 var windowObj = angularDomEl.data('kendoWindow');
                 // bind [x]-button close to closing function
                 var closeFn = function(){
-                    return $modalStack.close(modalInstance, modalInstance.result);
+                    return $modalStack.dismiss(modalInstance, 'closed by user [x]');
                 }
                 windowObj.bind("close", closeFn);
 
@@ -195,7 +191,6 @@ angular.module('ui.bootstrap.modal', [])
             };
 
             function broadcastClosing(modalWindow, resultOrReason, closing) {
-                console.log('close broadcasted');
                 return !modalWindow.value.modalScope.$broadcast('modal.closing', resultOrReason, closing).defaultPrevented;
             }
 

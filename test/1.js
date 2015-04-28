@@ -1,12 +1,12 @@
 /**
  * Created by antons on 4/24/15.
  */
-angular.module('ui.bootstrap.demo', ['ui.bootstrap.modal']);
+angular.module('ui.bootstrap.demo', ['speedup.modal']);
 angular.module('ui.bootstrap.demo').controller('ModalDemoCtrl', function ($scope, $modal, $log) {
 
     $scope.items = ['item1', 'item2', 'item3'];
 
-    $scope.open = function (size) {
+    $scope.open = function () {
 
         var modalInstance = $modal.open({
             templateUrl: 'myModalContent.html',
@@ -14,7 +14,8 @@ angular.module('ui.bootstrap.demo').controller('ModalDemoCtrl', function ($scope
             settings:{
                 width: 600,
                 actions: ['close'],
-                title: 'Super-druper'
+                title: 'Super-druper',
+                modal: true
             },
             resolve: {
                 items: function () {
